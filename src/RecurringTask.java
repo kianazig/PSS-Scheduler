@@ -33,4 +33,10 @@ public class RecurringTask extends Task {
     public int getFrequency() {
         return frequency;
     }
+    
+    @Override
+    public boolean withinTimePeriod(int startDate, int endDate) {
+        //TODO: Implement
+    	return false;
+    }
 }

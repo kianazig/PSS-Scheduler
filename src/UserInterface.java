@@ -9,7 +9,7 @@ public class UserInterface {
      * Iterates through a list of tasks and passes each to printTask().
      * @param tasks - a list of Task to be printed
      */
-    private void printListOfTasks(List<Task> tasks) {
+    public void printListOfTasks(List<Task> tasks) {
         for(int i = 0; i < tasks.size(); i++) {
             printTask(tasks.get(i));
         }
@@ -19,7 +19,7 @@ public class UserInterface {
      * Prints the start date, start time and name of the task.
      * @param task - a single Task to be printed
      */
-    private void printTask(Task task) {
+    public void printTask(Task task) {
         String taskName = task.getName();
         int taskStartDate = task.getDate();
         String reformattedDate = null;
@@ -59,7 +59,7 @@ public class UserInterface {
      * @return - the task name
      * @throws IOException
      */
-    private String promptForTaskName() throws IOException {
+    public String promptForTaskName() throws IOException {
         String taskName;
         System.out.print("Enter the task name: ");
         taskName = sc.nextLine();
@@ -71,7 +71,7 @@ public class UserInterface {
      * @return - the task type
      * @throws IOException
      */
-    private String promptForTaskType() throws IOException {
+    public String promptForTaskType() throws IOException {
         String taskType;
         System.out.print("Enter the task type: ");
         taskType = sc.nextLine();
@@ -83,7 +83,7 @@ public class UserInterface {
      * @return - the task start date
      * @throws IOException
      */
-    private int promptForDate() throws IOException {
+    public int promptForDate() throws IOException {
         int taskDate;
         System.out.print("Enter the task start date: ");
         taskDate = sc.nextInt();
@@ -96,7 +96,7 @@ public class UserInterface {
      * @return - the task start time
      * @throws IOException
      */
-    private double promptForTime() throws IOException {
+    public double promptForTime() throws IOException {
         double taskTime;
         System.out.print("Enter the task start time: ");
         taskTime = sc.nextDouble();
@@ -109,7 +109,7 @@ public class UserInterface {
      * @return - the task duration
      * @throws IOException
      */
-    private double promptForDuration() throws IOException {
+    public double promptForDuration() throws IOException {
         double taskDuration;
         System.out.print("Enter the task duration: ");
         taskDuration = sc.nextDouble();
@@ -122,7 +122,7 @@ public class UserInterface {
      * @return - the task frequency
      * @throws IOException
      */
-    private int promptForFrequency() throws IOException {
+    public int promptForFrequency() throws IOException {
         int taskFrequency;
         System.out.print("Enter the task frequency: ");
         taskFrequency = sc.nextInt();
@@ -135,7 +135,7 @@ public class UserInterface {
      * @return - the file name
      * @throws IOException
      */
-    private String promptForFileName() throws IOException {
+    public String promptForFileName() throws IOException {
         String fileName;
         System.out.print("Enter the file name: ");
         fileName = sc.nextLine();
@@ -146,7 +146,7 @@ public class UserInterface {
      * Asks the user whether they wish to overwrite an existing file. 
      * @return - boolean depending on whether user wishes to overwrite the file
      */
-    private boolean promptForFileOverwrite() {
+    public boolean promptForFileOverwrite() {
         String response = null;
         boolean isValid = false;
         System.out.println("There is currently an existing file with the same name. Do you wish to overwrite it?");
@@ -168,4 +168,31 @@ public class UserInterface {
             return false;
         }
     }
+    
+    /**
+     * Prompts the user with main menu options and returns an integer representing their choice.
+     * @return int representing user's menu option choice. 
+     */
+    public int promptForMenuOption() {
+    	int chosenMenuOption = 0;
+    	System.out.println("Main Menu: \n"
+    	  		+ "1: Create A Task\n"
+    	  		+ "2: View A Task\n"
+    	  		+ "3: Delete A Task\n"
+    	  		+ "4: Edit A Task\n"
+    	  		+ "5: Write Schedule to File\n"
+    	  		+ "6: Read Schedule from File\n"
+    	  		+ "7. View Schedule");
+    	System.out.print("Please enter a number: ");
+    	chosenMenuOption = sc.nextInt();
+        sc.nextLine();
+        return chosenMenuOption;
+    }
+    
+    /**
+     * Alerts the user that file does not exist.
+     */
+	public void printFileNameError() {
+		System.out.println("Error! This file does not exist.");
+	}
 }
