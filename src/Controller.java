@@ -1,9 +1,5 @@
 import java.io.*;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 public class Controller {
   private static Scheduler scheduler;
   private static UserInterface ui;
@@ -12,43 +8,6 @@ public class Controller {
     System.out.println("Test: Project Set Up Successful");
     ui = new UserInterface();
     scheduler = new Scheduler();
-
-    readFromFile("C:\\Users\\John\\Desktop\\Homework4\\Set1.json");
-
-  }
-
-  /**
-   * Reads and adds tasks from JSON file.
-   * 
-   * @param filename - Filename of the JSON. Ex: C:\Users\Bob\Desktop\Set1.json
-   */
-  private static void readFromFile(String filename) {
-    try (FileReader reader = new FileReader(filename)) {
-      Object obj = new JSONParser().parse(reader);
-      JSONArray taskList = (JSONArray) obj;
-
-      for (Object task : taskList) {
-        JSONObject taskObject = (JSONObject) task;
-
-        String name = (String) taskObject.get("Name");
-        String type = (String) taskObject.get("Type");
-        double startTime = ((Number) taskObject.get("StartTime")).doubleValue();
-        double duration = ((Number) taskObject.get("Duration")).doubleValue();
-
-        Task newTask;
-        if (taskObject.containsKey("EndDate")) {
-          newTask = new RecurringTask(name, type, ((Number) taskObject.get("StartDate")).intValue(), startTime,
-              duration, ((Number) taskObject.get("EndDate")).intValue(),
-              ((Number) taskObject.get("Frequency")).intValue());
-        } else {
-          newTask = new Task(name, type, ((Number) taskObject.get("Date")).intValue(), startTime, duration);
-        }
-
-        scheduler.addTask(newTask);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -105,7 +64,7 @@ public class Controller {
    * 
    * @throws IOException
    */
-  private void readFromFile() throws IOException {
+  private static void readFromFile() throws IOException {
     String fileName = ui.promptForFileName();
     boolean fileExists = scheduler.writeFileExists(fileName);
     if (fileExists) {
