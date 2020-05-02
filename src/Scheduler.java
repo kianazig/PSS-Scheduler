@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.List;
 
 public class Scheduler {
@@ -81,8 +82,19 @@ public class Scheduler {
      * @return List of tasks within time period.
      */
     public List<Task> getTasksInTimePeriod(int startDate, int endDate){
-    	//TODO: Implement
-    	return null;
+    	//TODO: TEST
+    	List<Task> tasksInTimePeriod = new LinkedList<>();
+    	for(Task task : listOfTasks) {
+    		if(task.withinTimePeriod(startDate, endDate)) {
+    			if(task instanceof RecurringTask) {//If the task is a recurring task, we will individually add each instance within the time period.
+    				tasksInTimePeriod.addAll(((RecurringTask)task).getEffectiveTasks(startDate, endDate));
+    			}
+    			else {
+    				tasksInTimePeriod.add(task);
+    			}		
+    		}
+    	}
+    	return tasksInTimePeriod;
     }
     
     /**
