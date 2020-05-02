@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Scheduler {
 
-    private List<Task> listOfTasks;
+    private List<Task> listOfTasks = new ArrayList<>();
 
     void addTask(Task newTask)
     {
