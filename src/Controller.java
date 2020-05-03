@@ -133,7 +133,17 @@ public class Controller {
   /**
    * Prompts user for task information and creates task.
    */
-  private void createATask() {
-    // TODO: Implement
+  private void createATask() throws IOException {
+    // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test
+	String name = ui.promptForTaskName();
+	scheduler.addTask(scheduler.addTask(name));
+	String type = ui.promptForTaskType();
+	scheduler.addTask(scheduler.addTask(type));
+	int date = ui.promptForDate();
+	scheduler.addTask(scheduler.addTask(date));
+	double startTime = ui.promptForTime();
+	scheduler.addTask(scheduler.addTask(startTime));
+	double duration = ui.promptForDuration();
+	scheduler.addTask(scheduler.addTask(duration));
   }
 }
