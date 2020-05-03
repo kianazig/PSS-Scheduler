@@ -33,7 +33,8 @@ public class RecurringTask extends Task {
 
         calendar.setTime(formattedStartDate);
         while(calendar.getTime().compareTo(formattedEndDate) <= 0) {
-        	effectiveTasks.add(new Task(name, type, date, startTime, duration));
+        	int effectiveDate = Integer.parseInt(dataFormat.format(calendar.getTime()));
+        	effectiveTasks.add(new Task(name, type, effectiveDate, startTime, duration));
         	if(frequency == 1) {
         		calendar.roll(Calendar.DATE, true);
         	}
@@ -72,7 +73,8 @@ public class RecurringTask extends Task {
 
         calendar.setTime(formattedStartDate);
         while(calendar.getTime().compareTo(formattedTaskEndDate) <= 0 && calendar.getTime().compareTo(formattedTimePeriodEndDate) <= 0) {
-        	effectiveTasks.add(new Task(name, type, date, startTime, duration));
+        	int effectiveDate = Integer.parseInt(dataFormat.format(calendar.getTime()));
+        	effectiveTasks.add(new Task(name, type, effectiveDate, startTime, duration));
         	if(frequency == 1) {
         		calendar.roll(Calendar.DATE, true);
         	}
