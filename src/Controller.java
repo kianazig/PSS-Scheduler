@@ -3,11 +3,20 @@ import java.io.*;
 public class Controller {
   private static Scheduler scheduler;
   private static UserInterface ui;
+  private static Controller controller;
 
   public static void main(String[] args) {
     System.out.println("Test: Project Set Up Successful");
     ui = new UserInterface();
     scheduler = new Scheduler();
+    controller = new Controller();
+    try {
+    	while(controller.displayMenu()) {
+    		
+    	}
+    } catch(IOException io) {
+    	System.exit(1);
+    }
   }
 
   /**
@@ -16,7 +25,7 @@ public class Controller {
    * 
    * @throws IOException
    */
-  private void displayMenu() throws IOException {
+  private boolean displayMenu() throws IOException {
     int chosenMenuOption = ui.promptForMenuOption();
     switch (chosenMenuOption) {
       case 1:
@@ -40,10 +49,13 @@ public class Controller {
       case 7:
         viewSchedule();
         break;
+      case 8:
+    	return false;
       default:
         // TODO: ERROR
     }
 
+    return true;
   }
 
   /**
@@ -136,14 +148,10 @@ public class Controller {
   private void createATask() throws IOException {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
 	String name = ui.promptForTaskName();
-	scheduler.addTask(scheduler.addTask(name));
 	String type = ui.promptForTaskType();
-	scheduler.addTask(scheduler.addTask(type));
 	int date = ui.promptForDate();
-	scheduler.addTask(scheduler.addTask(date));
 	double startTime = ui.promptForTime();
-	scheduler.addTask(scheduler.addTask(startTime));
 	double duration = ui.promptForDuration();
-	scheduler.addTask(scheduler.addTask(duration));
+	scheduler.addTask(new Task(name, type, date, startTime, duration));
   }
 }
