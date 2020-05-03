@@ -100,9 +100,30 @@ public class Scheduler {
    * 
    * @param fileName Name of file to write to.
    */
-  public void writeToFile(String fileName) {
-    // TODO: Implement
+  public void 0(String fileName) {
+    JSONArray list = new JSONArray();
 
+    for (Task task : listOfTasks) {
+      JSONObject obj = new JSONObject();
+      obj.put("Name", task.getName());
+      obj.put("Type", task.getType());
+      obj.put("StartDate", task.getDate());
+      obj.put("StartTime", task.getStartTime());
+      obj.put("Duration", task.getDuration());
+
+      if (task instanceof RecurringTask) {
+        obj.put("EndDate", ((RecurringTask) task).getEndDate());
+        obj.put("Frequency", ((RecurringTask) task).getFrequency());
+      }
+
+      list.add(obj);
+    }
+
+    try (FileWriter file = new FileWriter(fileName)) {
+      file.write(list.toJSONString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -112,7 +133,29 @@ public class Scheduler {
    * @param tasks    Tasks to be written to file.
    */
   public void writeToFile(String fileName, List<Task> tasks) {
-    // TODO: Implement
+    JSONArray list = new JSONArray();
+
+    for (Task task : tasks) {
+      JSONObject obj = new JSONObject();
+      obj.put("Name", task.getName());
+      obj.put("Type", task.getType());
+      obj.put("StartDate", task.getDate());
+      obj.put("StartTime", task.getStartTime());
+      obj.put("Duration", task.getDuration());
+
+      if (task instanceof RecurringTask) {
+        obj.put("EndDate", ((RecurringTask) task).getEndDate());
+        obj.put("Frequency", ((RecurringTask) task).getFrequency());
+      }
+
+      list.add(obj);
+    }
+
+    try (FileWriter file = new FileWriter(fileName)) {
+      file.write(list.toJSONString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
