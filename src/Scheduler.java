@@ -100,7 +100,7 @@ public class Scheduler {
    * 
    * @param fileName Name of file to write to.
    */
-  public void 0(String fileName) {
+  public void writeToFile(String fileName) {
     JSONArray list = new JSONArray();
 
     for (Task task : listOfTasks) {
@@ -165,8 +165,9 @@ public class Scheduler {
    * @return True if exists, false otherwise.
    */
   public boolean writeFileExists(String fileName) {
-    // TODO: Implement
-    return false;
+    File f = new File(fileName);
+
+    return f.exists() && !f.isDirectory();
   }
 
   /**
