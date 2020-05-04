@@ -102,7 +102,10 @@ public class UserInterface {
         dateParts = taskDateStr.split("/");
 
         if (dateParts.length == 3 && isNumeric(dateParts)) {
-          break;
+        	if(dateParts[0].length() == 2 && dateParts[1].length() == 2 && dateParts[2].length() == 4) {
+        		 break;
+        	}
+         
         }
       }
 
@@ -136,23 +139,28 @@ public class UserInterface {
    * @throws IOException
    */
   public double promptForTime() throws IOException {
-    boolean isValid = false;
     String taskTimeStr;
     String[] timeParts = null;
     double taskTime;
 
-    while (!isValid) {
+    while (true) {
       System.out.print("Enter the task start time (in 24-hour format, HH:MM): ");
       taskTimeStr = sc.nextLine();
 
       // Check if input is valid
       timeParts = taskTimeStr.split(":");
-      if (timeParts.length != 2 || !isNumeric(timeParts)) {
-        System.out.println("Input is invalid!");
-        break;
+      
+      if(timeParts.length == 2 && isNumeric(timeParts)) {
+    	  if(Integer.parseInt(timeParts[0]) <= 24 && Integer.parseInt(timeParts[1]) <= 59) {
+    		  if(timeParts[1].length() == 2) {
+    			  break;
+    		  }
+    	  }
       }
-      isValid = true;
+      
+      System.out.println("Input is invalid!");
     }
+    
     int hour = Integer.valueOf(timeParts[0]);
     int minutes = Integer.valueOf(timeParts[1]);
     double formattedMinutes = roundMinutes(minutes);
@@ -196,23 +204,24 @@ public class UserInterface {
    * @throws IOException
    */
   public double promptForDuration() throws IOException {
-    boolean isValid = false;
     String taskDurationStr;
     String[] timeParts = null;
     double taskDuration;
 
-    while (!isValid) {
+    //TODO: Is there a maximum or minimum duration?
+    while (true) {
       System.out.print("Enter the task duration (in format, HH:MM): ");
       taskDurationStr = sc.nextLine();
 
       // Check if input is valid
       timeParts = taskDurationStr.split(":");
-      if (timeParts.length != 2 || !isNumeric(timeParts)) {
-        System.out.println("Input is invalid!");
-        break;
+      if(timeParts.length == 2 && isNumeric(timeParts)) {
+    	  if(timeParts[1].length() == 2) {
+    		  break;
+    	  }
       }
-      isValid = true;
     }
+    
     int hour = Integer.valueOf(timeParts[0]);
     int minutes = Integer.valueOf(timeParts[1]);
     double formattedMinutes = roundMinutes(minutes);
