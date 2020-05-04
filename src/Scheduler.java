@@ -66,11 +66,7 @@ public class Scheduler {
    * @return int representing end date.
    */
   public int getEndDate(int startDate, int duration) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("Mddyyyy");
-
-    if (String.valueOf(startDate).length() == 8) {
-      dateFormat = new SimpleDateFormat("MMddyyyy");
-    }
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
     try {
       Date date = dateFormat.parse(String.valueOf(startDate));
