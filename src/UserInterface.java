@@ -305,10 +305,25 @@ public class UserInterface {
     	  		+ "4: Edit A Task\n"
     	  		+ "5: Write Schedule to File\n"
     	  		+ "6: Read Schedule from File\n"
-    	  		+ "7. View Schedule");
+    	  		+ "7. View Schedule\n"
+    	  		+ "8. Exit");
     	System.out.print("Please enter a number: ");
-    	chosenMenuOption = sc.nextInt();
-        sc.nextLine();
+    	boolean incorrectInput = true;
+    	do {
+    		try {
+    			chosenMenuOption = sc.nextInt();
+    			sc.nextLine();
+    			while(chosenMenuOption < 1 || chosenMenuOption > 8 ) {
+    				System.out.print("Invalid input, try again: ");
+    				chosenMenuOption = sc.nextInt();
+    				sc.nextLine();
+    			}
+    			incorrectInput = false;
+    		} catch(Exception E) {
+    			System.out.println("Invalid input, try again: ");
+    			sc.nextLine();
+    		}
+    	} while(incorrectInput);
         return chosenMenuOption;
     }
     
