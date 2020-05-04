@@ -256,10 +256,16 @@ public class UserInterface {
             System.out.print("Enter the file name: ");
             fileName = sc.nextLine();
 
-            String[] splitStr = fileName.split(".");
-            if(!(splitStr[1].equalsIgnoreCase("json"))) {
-                System.out.println("Input is of an invalid file type! Make sure it is a json file.");
-                break;
+            if (!fileName.contains(".")) {
+              continue;
+            }
+
+            String[] splitStr = fileName.split("\\.");
+
+            if(splitStr[splitStr.length - 1].equalsIgnoreCase("json")) {
+                isValid = true;
+            } else {
+              System.out.println("Input is of an invalid file type! Make sure it is a json file.");
             }
         }
         
