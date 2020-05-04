@@ -84,67 +84,190 @@ public class UserInterface {
      * @throws IOException
      */
     public int promptForDate() throws IOException {
+        boolean isValid = false;
+        String taskDateStr;
+        String[] dateParts = null;
         int taskDate;
-        System.out.print("Enter the task start date: ");
-        taskDate = sc.nextInt();
-        sc.nextLine();
+        while(!isValid) {
+            System.out.print("Enter the task start date (in format, MM/DD/YYYY): ");
+            taskDateStr = sc.nextLine();
+
+            // Check if input is valid
+            dateParts = taskDateStr.split("/");
+            if(dateParts.length != 3 || !isNumeric(dateParts)) {
+                System.out.println("Input is invalid!");
+                break;
+            }
+            isValid = true;
+        }
+        taskDateStr = dateParts[2] + dateParts[0] + dateParts[1];
+        taskDate = Integer.valueOf(taskDateStr);
+
         return taskDate;
     }
 
     /**
+     * Checks if there are letters in the array, if yes return false else true
+     * @param arr to be checked for letters
+     * @return boolean 
+     */
+    public boolean isNumeric(String[] arr) {
+        for(int i = 0; i < arr.length; i++) {
+            if(arr[i].matches("^[a-zA-Z]*$]")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Asks user to enter the time that a task should start.
-     * @return - the task start time
+     * @return double representing the task start time
      * @throws IOException
      */
     public double promptForTime() throws IOException {
+        boolean isValid = false;
+        String taskTimeStr;
+        String[] timeParts = null;
         double taskTime;
-        System.out.print("Enter the task start time: ");
-        taskTime = sc.nextDouble();
-        sc.nextLine();
+
+        while(!isValid) {
+            System.out.print("Enter the task start time (in 24-hour format, HH:MM): ");
+            taskTimeStr = sc.nextLine();
+
+            // Check if input is valid
+            timeParts = taskTimeStr.split(":");
+            if(timeParts.length != 2 || !isNumeric(timeParts)) {
+                System.out.println("Input is invalid!");
+                break;
+            }
+            isValid = true;
+        }
+        int hour = Integer.valueOf(timeParts[0]);
+        int minutes = Integer.valueOf(timeParts[1]);
+        double formattedMinutes = roundMinutes(minutes);
+        if(formattedMinutes == 1) {
+            formattedMinutes = 0;
+            hour = hour + 1;
+        }
+        formattedMinutes = formattedMinutes/100;
+        taskTime = hour + formattedMinutes;
+
         return taskTime;
     }
 
     /**
+     * Takes the user-formatted minutes and changes it to program-readable minutes.
+     * @param min the int value for minutes
+     * @return the rounded double for minutes
+     */
+    private int roundMinutes(int min) {
+        int formattedMin;
+
+        if(min >= 0 && min <= 7) {
+            formattedMin = 0;
+        }
+        else if(min >= 8 && min <= 23) {
+            formattedMin = 25;
+        }
+        else if(min >= 24 && min <= 38) {
+            formattedMin = 50;
+        }
+        else if(min >= 39 && min <= 53) {
+            formattedMin = 75;
+        }
+        else {
+            formattedMin = 1;
+        }
+        return formattedMin;
+    }
+
+    /**
      * Asks user to enter the duration of the task.
-     * @return - the task duration
+     * @return double representing the task duration
      * @throws IOException
      */
     public double promptForDuration() throws IOException {
+        boolean isValid = false;
+        String taskDurationStr;
+        String[] timeParts= null;
         double taskDuration;
-        System.out.print("Enter the task duration: ");
-        taskDuration = sc.nextDouble();
-        sc.nextLine();
+
+        while(!isValid) {
+            System.out.print("Enter the task duration (in format, HH:MM): ");
+            taskDurationStr = sc.nextLine();
+
+            // Check if input is valid
+            timeParts = taskDurationStr.split(":");
+            if(timeParts.length != 2 || !isNumeric(timeParts)) {
+                System.out.println("Input is invalid!");
+                break;
+            }
+        }
+        int hour = Integer.valueOf(timeParts[0]);
+        int minutes = Integer.valueOf(timeParts[1]);
+        double formattedMinutes = roundMinutes(minutes);
+        if(formattedMinutes == 1) {
+            formattedMinutes = 0;
+            hour = hour + 1;
+        }
+        formattedMinutes = formattedMinutes/100;
+        taskDuration = hour + formattedMinutes;
+
         return taskDuration;
     }
 
     /**
      * Asks user to enter the frequency at which the task should occur.
-     * @return - the task frequency
+     * @return int representing the task frequency
      * @throws IOException
      */
     public int promptForFrequency() throws IOException {
-        int taskFrequency;
-        System.out.print("Enter the task frequency: ");
-        taskFrequency = sc.nextInt();
-        sc.nextLine();
+        boolean isValid = false;
+        int taskFrequency = 0;
+
+        while(!isValid) {
+            System.out.print("Enter the task frequency (1 for daily, 7 for weekly, 30 for monthly): ");
+            taskFrequency = sc.nextInt();
+            sc.nextLine();
+
+            // Check if input is valid
+            if(taskFrequency != 1 || taskFrequency != 7 || taskFrequency != 30) {
+                System.out.println("Input is invalid!");
+                break;
+            }
+            isValid = true;
+        }
+
         return taskFrequency;
     }
 
     /**
      * Asks user to enter a file name.
-     * @return - the file name
+     * @return String of the file name
      * @throws IOException
      */
     public String promptForFileName() throws IOException {
-        String fileName;
-        System.out.print("Enter the file name: ");
-        fileName = sc.nextLine();
+        boolean isValid = false;
+        String fileName = null;
+
+        while (!isValid) {
+            System.out.print("Enter the file name: ");
+            fileName = sc.nextLine();
+
+            String[] splitStr = fileName.split(".");
+            if(!(splitStr[1].equalsIgnoreCase("json"))) {
+                System.out.println("Input is of an invalid file type! Make sure it is a json file.");
+                break;
+            }
+        }
+        
         return fileName;
     }
 
     /**
      * Asks the user whether they wish to overwrite an existing file. 
-     * @return - boolean depending on whether user wishes to overwrite the file
+     * @return boolean depending on whether user wishes to overwrite the file
      */
     public boolean promptForFileOverwrite() {
         String response = null;
