@@ -10,9 +10,10 @@ public class Controller {
     ui = new UserInterface();
     scheduler = new Scheduler();
     controller = new Controller();
+    
+    // main loop of the program, displays menu until user decides to exit
     try {
     	while(controller.displayMenu()) {
-    		
     	}
     } catch(IOException io) {
     	System.exit(1);
