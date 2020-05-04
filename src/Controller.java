@@ -11,11 +11,11 @@ public class Controller {
     scheduler = new Scheduler();
     controller = new Controller();
     try {
-    	while(controller.displayMenu()) {
-    		
-    	}
-    } catch(IOException io) {
-    	System.exit(1);
+      while (controller.displayMenu()) {
+
+      }
+    } catch (IOException io) {
+      System.exit(1);
     }
   }
 
@@ -50,7 +50,7 @@ public class Controller {
         viewSchedule();
         break;
       case 8:
-    	return false;
+        return false;
       default:
         // TODO: ERROR
     }
@@ -106,6 +106,8 @@ public class Controller {
     }
 
     if (overwriteFile) {
+      System.out.println(scheduler.getTasksInTimePeriod(startDate, endDate));
+
       scheduler.writeToFile(fileName, scheduler.getTasksInTimePeriod(startDate, endDate));
     } else {
       // TODO: What to do if user doesn't want to overrwite file?
@@ -147,11 +149,11 @@ public class Controller {
    */
   private void createATask() throws IOException {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
-	String name = ui.promptForTaskName();
-	String type = ui.promptForTaskType();
-	int date = ui.promptForDate();
-	double startTime = ui.promptForTime();
-	double duration = ui.promptForDuration();
-	scheduler.addTask(new Task(name, type, date, startTime, duration));
+    String name = ui.promptForTaskName();
+    String type = ui.promptForTaskType();
+    int date = ui.promptForDate();
+    double startTime = ui.promptForTime();
+    double duration = ui.promptForDuration();
+    scheduler.addTask(new Task(name, type, date, startTime, duration));
   }
 }

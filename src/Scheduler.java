@@ -1,12 +1,10 @@
 import java.io.*;
+import java.util.*;
+import java.text.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Scheduler {
 
@@ -68,7 +66,33 @@ public class Scheduler {
    * @return int representing end date.
    */
   public int getEndDate(int startDate, int duration) {
-    // TODO: Implement
+    SimpleDateFormat dateFormat = new SimpleDateFormat("Mddyyyy");
+
+    if (String.valueOf(startDate).length() == 8) {
+      dateFormat = new SimpleDateFormat("MMddyyyy");
+    }
+
+    try {
+      Date date = dateFormat.parse(String.valueOf(startDate));
+
+      Calendar c = Calendar.getInstance();
+      c.setTime(date);
+
+      if (duration == 1) {
+        c.add(Calendar.DATE, 1);
+      } else if (duration == 7) {
+        c.add(Calendar.WEEK_OF_MONTH, 1);
+      } else if (duration == 30) {
+        c.add(Calendar.MONTH, 1);
+      }
+
+      date = c.getTime();
+
+      return Integer.parseInt(dateFormat.format(date));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     return -1;
   }
 
