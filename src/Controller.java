@@ -132,7 +132,18 @@ public class Controller {
    */
   private void deleteATask() throws IOException {
     String taskName = ui.promptForTaskName();
-    scheduler.deleteTask(scheduler.getTask(taskName));
+    if(scheduler.getTask(taskName) != null) {
+    	if (scheduler.deleteTask(scheduler.getTask(taskName)) == false) {
+    		ui.printTaskNameError();
+    	}
+    	else {
+    		ui.printTaskSuccessfullyDeleted();
+    	}
+    }
+    else {
+    	ui.printTaskNameError();
+    }
+    
   }
 
   /**
@@ -142,7 +153,13 @@ public class Controller {
    */
   private void viewATask() throws IOException {
     String taskName = ui.promptForTaskName();
-    ui.printTask(scheduler.getTask(taskName));
+    if(scheduler.getTask(taskName) != null) {
+    	ui.printTask(scheduler.getTask(taskName));
+    }
+    else {
+    	ui.printTaskNameError();
+    }
+    
   }
 
   /**
@@ -150,6 +167,7 @@ public class Controller {
    */
   private void createATask() throws IOException {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
+	// TODO: Need to know if user is creating a transient, recurring, or antitask.
     String name = ui.promptForTaskName();
     String type = ui.promptForTaskType();
     int date = ui.promptForDate();

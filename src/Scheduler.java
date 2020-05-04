@@ -14,19 +14,23 @@ public class Scheduler {
     listOfTasks.add(newTask);
   }
 
-  void deleteTask(Task newTask) {
+  /**
+   * Deletes a task.
+   * @param taskToDelete Task to be deleted.
+   * @return True if successfully deleted, false otherwise.
+   */
+  public boolean deleteTask(Task taskToDelete) {
     int counter = 0;
     while (counter < listOfTasks.size()) {
-      if (newTask.equals(listOfTasks.get(counter))) {
+      if (taskToDelete.equals(listOfTasks.get(counter))) {
         listOfTasks.remove(listOfTasks.get(counter));
-        return;
+        return true;
       }
 
       ++counter;
     }
 
-    System.out.print("Task does not exist.");
-    return;
+    return false;
   }
 
   Task getTask(String retrievalName) {
@@ -39,7 +43,6 @@ public class Scheduler {
       ++counter;
     }
 
-    System.out.print("Task name does not exist.");
     return null;
   }
 

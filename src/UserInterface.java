@@ -324,7 +324,7 @@ public class UserInterface {
   public int promptForMenuOption() {
     int chosenMenuOption = 0;
     System.out
-        .println("Main Menu: \n" + "1: Create A Task\n" + "2: View A Task\n" + "3: Delete A Task\n" + "4: Edit A Task\n"
+        .println("\nMain Menu: \n" + "1: Create A Task\n" + "2: View A Task\n" + "3: Delete A Task\n" + "4: Edit A Task\n"
             + "5: Write Schedule to File\n" + "6: Read Schedule from File\n" + "7. View Schedule\n" + "8. Exit");
     System.out.print("Please enter a number: ");
     boolean incorrectInput = true;
@@ -351,5 +351,19 @@ public class UserInterface {
    */
   public void printFileNameError() {
     System.out.println("Error! This file does not exist.");
+  }
+  
+  /**
+   * Alerts the user that task name is invalid.
+   */
+  public void printTaskNameError() {
+	  System.out.println("Error! No task with this name exists.");
+  }
+  
+  /**
+   * Alerts the user that task was successfully deleted.
+   */
+  public void printTaskSuccessfullyDeleted() {
+	  System.out.println("Task successfully deleted.");
   }
 }
