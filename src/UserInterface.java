@@ -203,6 +203,7 @@ public class UserInterface {
                 System.out.println("Input is invalid!");
                 break;
             }
+            isValid = true;
         }
         int hour = Integer.valueOf(timeParts[0]);
         int minutes = Integer.valueOf(timeParts[1]);
