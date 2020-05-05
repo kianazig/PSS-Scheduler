@@ -11,6 +11,8 @@ public class Scheduler {
   private List<Task> listOfTasks = new ArrayList<>();
 
   void addTask(Task newTask) {
+	if(newTask instanceof RecurringTask)
+		((RecurringTask)newTask).setScheduler(this);
     listOfTasks.add(newTask);
   }
 
@@ -93,6 +95,19 @@ public class Scheduler {
   }
   
   /**
+   * @return A list of AntiTasks in the Scheduler.
+   */
+  public List<Task> getAntiTasks() {
+	  List<Task> antiTasks = new LinkedList<Task>();
+	  for(Task task : listOfTasks) {
+		  if(task.getType().equals("Cancellation")) {
+			  antiTasks.add(task);
+		  }
+	  }
+	  return antiTasks;
+  }
+  
+  /**
    * Returns the corresponding end date for a given start date and duration.
    * 
    * @param startDate The starting date.
@@ -142,7 +157,7 @@ public class Scheduler {
         if (task instanceof RecurringTask) {// If the task is a recurring task, we will individually add each instance
                                             // within the time period.
           tasksInTimePeriod.addAll(((RecurringTask) task).getEffectiveTasks(startDate, endDate));
-        } else {
+        } else if(!task.getType().contentEquals("Cancellation")) {
           tasksInTimePeriod.add(task);
         }
       }
