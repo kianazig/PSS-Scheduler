@@ -43,6 +43,9 @@ public class Task {
      * @return True if the proposed parameters cause an overlap, false otherwise.
      */
     public boolean isOverlapping(int inDate, double inStartTime, double inDuration) {
+    	if(type.equals("Cancellation")) {
+    		return false;
+    	}
     	LocalDateTime thisStartTime, thisEndTime, providedStartTime, providedEndTime;
     	thisStartTime = this.getStartDateTime();
     	thisEndTime = this.getEndDateTime();
