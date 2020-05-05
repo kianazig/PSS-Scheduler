@@ -168,7 +168,7 @@ public class Scheduler {
   public void writeToFile(String fileName, List<Task> tasks) {
     JSONArray list = new JSONArray();
 
-    for (Task task : listOfTasks) {
+    for (Task task : tasks) {
       JSONObject obj = new JSONObject();
       obj.put("Name", task.getName());
       obj.put("Type", task.getType());
