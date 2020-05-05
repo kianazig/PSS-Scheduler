@@ -7,7 +7,6 @@ public class Controller {
   private static Controller controller;
 
   public static void main(String[] args) {
-    System.out.println("Test: Project Set Up Successful");
     ui = new UserInterface();
     scheduler = new Scheduler();
     controller = new Controller();
@@ -170,12 +169,16 @@ public class Controller {
                 System.out.println("Unable to change due to conflicts with existing tasks!");
               }
               break;
-            case 5: // duration
+            case 5: // duration    
+              Task taskToEdit = scheduler.getTask(taskName);
+              scheduler.deleteTask(taskToEdit);
+              
               double duration = ui.promptForDuration();
-              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), duration, 
-                scheduler.getTask(taskName).getEndDate(), scheduler.getTask(taskName).getFrequency()) == null)) {
+              if((scheduler.isOverlapping(taskToEdit.getDate(), taskToEdit.getStartTime(), duration, taskToEdit.getEndDate(), taskToEdit.getFrequency()) == null)) {
+            	scheduler.addTask(taskToEdit);
                 scheduler.getTask(taskName).setDuration(duration);
               } else {
+            	  scheduler.addTask(taskToEdit);
                 System.out.println("Unable to change due to conflicts with existing tasks!");
               }
               break;
@@ -219,6 +222,10 @@ public class Controller {
               }
               break;
             case 2: // type
+              if(scheduler.getTask(taskName).getType().equals("Cancellation")) {
+            	  System.out.println("Can't change the type of an antitask.");
+            	  break;
+              }
               String type = ui.promptForTaskType();
               if(scheduler.isValidTaskType(true, type)) {
                 scheduler.getTask(taskName).setType(type);
@@ -244,10 +251,15 @@ public class Controller {
               }
               break;
             case 5: // duration
+              Task taskToEdit = scheduler.getTask(taskName);
+              scheduler.deleteTask(taskToEdit);
+            
               double duration = ui.promptForDuration();
-              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), duration) == null)) {
+              if((scheduler.isOverlapping(taskToEdit.getDate(), taskToEdit.getStartTime(), duration) == null)) {
+            	scheduler.addTask(taskToEdit);
                 scheduler.getTask(taskName).setDuration(duration);
               } else {
+                scheduler.addTask(taskToEdit);
                 System.out.println("Unable to change due to conflicts with existing tasks!");
               }
               break;
