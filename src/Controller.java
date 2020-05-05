@@ -168,11 +168,34 @@ public class Controller {
   private void createATask() throws IOException {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
 	// TODO: Need to know if user is creating a transient, recurring, or antitask.
+	  
     String name = ui.promptForTaskName();
+    while(!scheduler.isNameUnique(name)) {
+    	// ideally this would be another method in UserInterface
+    	System.out.println("Provided name is not unique, please provide a unique task name");
+    	name = ui.promptForTaskName();
+    }
+    
     String type = ui.promptForTaskType();
+    
     int date = ui.promptForDate();
     double startTime = ui.promptForTime();
     double duration = ui.promptForDuration();
+    // test if the provided times cause any overlap with tasks already in the scheduler
+    Task overlapTask = scheduler.isOverlapping(date, startTime, duration);
+    // if there are no tasks that overlap with the provided parameters, do nothing
+    while(overlapTask != null) {
+    	// otherwise, print the conflicting task and ask the user to try again
+    	// perhaps a printOverlapMessage method can be put in the UserInterface class
+    	System.out.println("Provided times conflict with the following task: ");
+    	ui.printTask(overlapTask);
+    	System.out.println("Please provide different time parameters");
+    	date = ui.promptForDate();
+    	startTime = ui.promptForTime();
+    	duration = ui.promptForDuration();
+    	overlapTask = scheduler.isOverlapping(date, startTime, duration);
+    }
+    
     scheduler.addTask(new Task(name, type, date, startTime, duration));
   }
 }

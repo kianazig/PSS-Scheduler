@@ -85,4 +85,22 @@ public class RecurringTask extends Task {
 
     	return false;
     }
+    
+    /**
+     * Tests if the proposed start time and duration for a yet to be Task would
+     * cause the Task to overlap with any occurrence of this recurring task.
+     * @param inDate The proposed date of the Task being tested.
+     * @param inStartTime The proposed start time of the Task being tested.
+     * @param inDuration The proposed duration of the Task being tested.
+     * @return True if the proposed parameters cause an overlap, false otherwise.
+     */
+    @Override
+    public boolean isOverlapping(int inDate, double inStartTime, double inDuration) {
+    	List<Task> effectiveTasks = this.getEffectiveTasks();
+    	for(Task task : effectiveTasks) {
+    		if(task.isOverlapping(inDate, inStartTime, inDuration))
+    			return true;
+    	}
+    	return false;
+    }
 }

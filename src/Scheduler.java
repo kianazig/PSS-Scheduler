@@ -11,6 +11,7 @@ public class Scheduler {
   private List<Task> listOfTasks = new ArrayList<>();
 
   void addTask(Task newTask) {
+	
     listOfTasks.add(newTask);
   }
 
@@ -60,6 +61,38 @@ public class Scheduler {
     return null;
   }
 
+  /**
+   * Tests if the provided name is a unique task name.
+   * @param inName The name being tested.
+   * @return True if the name does not belong to another task in the Scheduler already, false otherwise.
+   */
+  public boolean isNameUnique(String inName) {
+	  for(Task task : listOfTasks) {
+		  if(inName.equals(task.getName())) {
+			  return false;
+		  }
+	  }
+	  return true;
+  }
+
+  /**
+   * Tests if the proposed start time and duration for a yet to be Task would
+   * cause the Task to overlap with a Task already in the Scheduler.
+   * @param inDate The proposed date of the Task.
+   * @param inStartTime The proposed start time of the Task.
+   * @param inDuration The proposed duration of the Task.
+   * @return The task that the proposed parameters would conflict with, null if the
+   * proposed parameters causes no conflicts.
+   */
+  public Task isOverlapping(int inDate, double inStartTime, double inDuration) {
+	  for(Task task : listOfTasks) {
+		  if(task.isOverlapping(inDate, inStartTime, inDuration)) {
+			  return task;
+		  }
+	  }
+	  return null;
+  }
+  
   /**
    * Returns the corresponding end date for a given start date and duration.
    * 
