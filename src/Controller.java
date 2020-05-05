@@ -168,33 +168,136 @@ public class Controller {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
 	  // TODO: Need to know if user is creating a transient, recurring, or antitask.
 	  
-    String name = ui.promptForTaskName();
-    while(!scheduler.isNameUnique(name)) {
-    	// ideally this would be another method in UserInterface
-    	System.out.println("Provided name is not unique, please provide a unique task name.");
-    	name = ui.promptForTaskName();
-    }
-    
-    String type = ui.promptForTaskType();
-    
-    int date = ui.promptForDate();
-    double startTime = ui.promptForTime();
-    double duration = ui.promptForDuration();
-    // test if the provided times cause any overlap with tasks already in the scheduler
-    Task overlapTask = scheduler.isOverlapping(date, startTime, duration);
-    // if there are no tasks that overlap with the provided parameters, do nothing
-    while(overlapTask != null) {
-    	// otherwise, print the conflicting task and ask the user to try again
-    	// perhaps a printOverlapMessage method can be put in the UserInterface class
-    	System.out.println("Provided time conflicts with the following task: ");
-    	ui.printTask(overlapTask);
-    	System.out.println("Please provide different time parameters.");
-    	date = ui.promptForDate();
-    	startTime = ui.promptForTime();
-    	duration = ui.promptForDuration();
-    	overlapTask = scheduler.isOverlapping(date, startTime, duration);
-    }
-    
-    scheduler.addTask(new Task(name, type, date, startTime, duration));
+	int taskClass = ui.promptForTaskClass();
+	
+	if(taskClass == 1) {//Transient Task
+		createTransientTask();
+	}
+	else if(taskClass == 2) {//Recurring Task
+		createRecurringTask();
+	}
+	else if(taskClass == 3) {//AntiTask
+		createAntiTask();
+	}
+  }
+  
+  /**
+   * Creates a transient task.
+   * @throws IOException 
+   */
+  private void createTransientTask() throws IOException {
+	    String name = ui.promptForTaskName();
+	    while(!scheduler.isNameUnique(name)) {
+	    	ui.printTaskNameExists();
+	    	name = ui.promptForTaskName();
+	    }
+	    
+	    String type = ui.promptForTaskType();
+	    while(!scheduler.isValidTaskType(true, type)) {
+	    	ui.printInvalidTaskType(true);
+	    	type = ui.promptForTaskType();
+	    }
+	    
+	    int date = ui.promptForDate();
+	    double startTime = ui.promptForTime();
+	    double duration = ui.promptForDuration();
+	    // test if the provided times cause any overlap with tasks already in the scheduler
+	    Task overlapTask = scheduler.isOverlapping(date, startTime, duration);
+	    // if there are no tasks that overlap with the provided parameters, do nothing
+	    while(overlapTask != null) {
+	    	// otherwise, print the conflicting task and ask the user to try again
+	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
+	    	System.out.println("Provided times conflict with the following task: ");
+	    	ui.printTask(overlapTask);
+	    	System.out.println("Please provide different time parameters");
+	    	date = ui.promptForDate();
+	    	startTime = ui.promptForTime();
+	    	duration = ui.promptForDuration();
+	    	overlapTask = scheduler.isOverlapping(date, startTime, duration);
+	    }
+	    
+	    scheduler.addTask(new Task(name, type, date, startTime, duration));
+  }
+  
+  /**
+   * Creates a recurring task.
+ * @throws IOException 
+   */
+  private void createRecurringTask() throws IOException {
+	    String name = ui.promptForTaskName();
+	    while(!scheduler.isNameUnique(name)) {
+	    	ui.printTaskNameExists();
+	    	name = ui.promptForTaskName();
+	    }
+	    
+	    String type = ui.promptForTaskType();
+	    while(!scheduler.isValidTaskType(false, type)) {
+	    	ui.printInvalidTaskType(false);
+	    	type = ui.promptForTaskType();
+	    }
+	    
+	    int date = ui.promptForDate();
+	    double startTime = ui.promptForTime();
+	    double duration = ui.promptForDuration();
+	    int endDate = ui.promptForEndDate();
+	    int frequency = ui.promptForFrequency();
+	    // test if the provided times cause any overlap with tasks already in the scheduler
+	    Task overlapTask = scheduler.isOverlapping(date, startTime, duration, endDate, frequency);
+	    // if there are no tasks that overlap with the provided parameters, do nothing
+	    while(overlapTask != null) {
+	    	// otherwise, print the conflicting task and ask the user to try again
+	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
+	    	System.out.println("Provided times conflict with the following task: ");
+	    	ui.printTask(overlapTask);
+	    	System.out.println("Please provide different time parameters");
+	    	date = ui.promptForDate();
+	    	startTime = ui.promptForTime();
+	    	duration = ui.promptForDuration();
+	    	endDate = ui.promptForEndDate();
+	    	frequency = ui.promptForFrequency();
+	    	overlapTask = scheduler.isOverlapping(date, startTime, duration, endDate, frequency);
+	    }
+	    
+	    scheduler.addTask(new RecurringTask(name, type, date, startTime, duration, endDate, frequency));
+  }
+  
+  /**
+   * Creates an antitask.
+   * @throws IOException 
+   */
+  private void createAntiTask() throws IOException {
+	    String name = ui.promptForTaskName();
+	    while(!scheduler.isNameUnique(name)) {
+	    	ui.printTaskNameExists();
+	    	name = ui.promptForTaskName();
+	    }
+	    
+	    String type = "Cancellation";
+	    
+	    int date = ui.promptForDate();
+	    double startTime = ui.promptForTime();
+	    double duration = ui.promptForDuration();
+	    
+	    //TODO: Check that this matches recurring task instance.
+	    
+	    Task matchingRecurringTask = scheduler.matchesRecurringTask(date, startTime, duration);
+	    
+	    // test if the provided times cause any overlap with tasks already in the scheduler
+	    Task overlapTask = scheduler.isOverlapping(date, startTime, duration);
+	    // if there are no tasks that overlap with the provided parameters, do nothing
+	    while(matchingRecurringTask == null) {
+	    	// otherwise, print the conflicting task and ask the user to try again
+	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
+	    	System.out.println("This antitask does not match any instances of any recurring tasks.");
+	    	System.out.println("Please provide different time parameters");
+	    	date = ui.promptForDate();
+	    	startTime = ui.promptForTime();
+	    	duration = ui.promptForDuration();
+	    	matchingRecurringTask = scheduler.matchesRecurringTask(date, startTime, duration);
+	    }
+	    
+	    System.out.println("Replaced an instance of the following recurring task: ");
+	    ui.printTask(matchingRecurringTask);
+	    scheduler.addTask(new Task(name, type, date, startTime, duration));
   }
 }
