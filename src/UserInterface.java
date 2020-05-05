@@ -222,6 +222,7 @@ public class UserInterface {
     		  break;
     	  }
       }
+      System.out.println("Input is invalid!");
     }
     
     int hour = Integer.valueOf(timeParts[0]);
