@@ -241,12 +241,14 @@ public class Scheduler {
         double startTime = ((Number) taskObject.get("StartTime")).doubleValue();
         double duration = ((Number) taskObject.get("Duration")).doubleValue();
 
+        Task taskToAdd;
+
         if (taskObject.containsKey("EndDate")) {
           int startDate = ((Number) taskObject.get("StartDate")).intValue();
           int endDate = ((Number) taskObject.get("EndDate")).intValue();
           int frequency = ((Number) taskObject.get("Frequency")).intValue();
 
-          Task taskToAdd = new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency);
+          taskToAdd = new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency);
 
           if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) != null) {
             isOverlapping = true;
@@ -258,7 +260,7 @@ public class Scheduler {
         } else {
           int date = ((Number) taskObject.get("Date")).intValue();
 
-          Task taskToAdd = new Task(name, type, date, startTime, duration);
+          taskToAdd = new Task(name, type, date, startTime, duration);
 
           if (!listOfTasks.isEmpty() && isOverlapping(date, startTime, duration) != null) {
             isOverlapping = true;
