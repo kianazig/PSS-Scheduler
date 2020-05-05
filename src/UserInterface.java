@@ -331,16 +331,19 @@ public class UserInterface {
     int taskFrequency = 0;
 
     while (true) {
-      System.out.print("Enter the task frequency (1 for daily, 7 for weekly, 30 for monthly): ");
-      taskFrequency = sc.nextInt();
-
-      sc.nextLine();
-
-      // Check if input is valid
-      if (taskFrequency != 1 && taskFrequency != 7 && taskFrequency != 30) {
+      try {
+        System.out.print("Enter the task frequency (1 for daily, 7 for weekly, 30 for monthly): ");
+        sc = new Scanner(System.in);
+        taskFrequency = sc.nextInt();
+        sc.nextLine();
+        // Check if input is valid
+        if (taskFrequency != 1 && taskFrequency != 7 && taskFrequency != 30) {
+          System.out.println("Input is invalid!");
+        } else {
+          break;
+        }
+      } catch (InputMismatchException e) {
         System.out.println("Input is invalid!");
-      } else {
-        break;
       }
     }
 
