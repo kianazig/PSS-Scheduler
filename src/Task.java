@@ -21,6 +21,7 @@ public class Task {
 
     /**
      * Returns true or false depending on whether the task is within a certain time period.
+     * 
      * @param startDate - the date a task will start
      * @param endDate - the date a task will end
      * @return - whether or not the task is between the start and end date
@@ -35,6 +36,7 @@ public class Task {
     /**
      * Tests if the proposed start time and duration for a yet to be Task would
      * cause the Task to overlap with this Task.
+     * 
      * @param inDate The proposed date of the Task.
      * @param inStartTime The proposed start time of the Task being tested.
      * @param inDuration The proposed duration of the Task being tested.

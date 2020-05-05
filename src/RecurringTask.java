@@ -14,6 +14,7 @@ public class RecurringTask extends Task {
 
     /**
      * Returns each occurrence of the recurring task. 
+     * 
      * @return A List containing each occurrence of the recurring task.
      */
     public List<Task> getEffectiveTasks() {
@@ -51,6 +52,7 @@ public class RecurringTask extends Task {
 
     /**
      * Returns each occurrence of the recurring task within the given time period.
+     * 
      * @param startDate Start date of time period.
      * @param endDate End date of time period.
      * @return A list containing each occurrence of the recurring task within the specified time period.
@@ -89,6 +91,7 @@ public class RecurringTask extends Task {
     /**
      * Tests if the proposed start time and duration for a yet to be Task would
      * cause the Task to overlap with any occurrence of this recurring task.
+     * 
      * @param inDate The proposed date of the Task being tested.
      * @param inStartTime The proposed start time of the Task being tested.
      * @param inDuration The proposed duration of the Task being tested.

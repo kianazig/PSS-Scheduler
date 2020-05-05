@@ -11,7 +11,6 @@ public class Scheduler {
   private List<Task> listOfTasks = new ArrayList<>();
 
   void addTask(Task newTask) {
-	
     listOfTasks.add(newTask);
   }
 
