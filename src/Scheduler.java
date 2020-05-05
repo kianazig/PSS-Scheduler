@@ -248,7 +248,7 @@ public class Scheduler {
 
           Task taskToAdd = new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency);
 
-          if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) == null) {
+          if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) != null) {
             isOverlapping = true;
             break;
           }         
