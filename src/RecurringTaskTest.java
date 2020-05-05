@@ -6,9 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class RecurringTaskTest {
-
+	private Scheduler scheduler;
+	
 	@BeforeEach
 	void setUp() throws Exception {
+		scheduler = new Scheduler();
 	}
 
 	@Test
@@ -35,6 +37,13 @@ class RecurringTaskTest {
 		RecurringTask task2 = new RecurringTask("Once a month thing", "Study", 20200101, 18.00, 1.0, 20200506, 30);
 		effectiveTasks = task2.getEffectiveTasks();
 		assertEquals(5, effectiveTasks.size());
+		
+		//testing for anti-task cancellation
+		scheduler.addTask(task);
+		scheduler.addTask(new Task("OOP Class Skip", "Cancellation", 20200114, 19.00, 2.0));
+		scheduler.addTask(new Task("OOP Class Skip", "Cancellation", 20200121, 19.00, 2.0));
+		effectiveTasks = task.getEffectiveTasks();
+		assertEquals(15, effectiveTasks.size());
 	}
 	
 	@Test

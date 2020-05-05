@@ -11,6 +11,8 @@ public class Scheduler {
   private List<Task> listOfTasks = new ArrayList<>();
 
   void addTask(Task newTask) {
+	if(newTask instanceof RecurringTask)
+		((RecurringTask)newTask).setScheduler(this);
     listOfTasks.add(newTask);
   }
 
@@ -93,6 +95,19 @@ public class Scheduler {
   }
   
   /**
+   * @return A list of AntiTasks in the Scheduler.
+   */
+  public List<Task> getAntiTasks() {
+	  List<Task> antiTasks = new LinkedList<Task>();
+	  for(Task task : listOfTasks) {
+		  if(task.getType().equals("Cancellation")) {
+			  antiTasks.add(task);
+		  }
+	  }
+	  return antiTasks;
+  }
+  
+  /**
    * Returns the corresponding end date for a given start date and duration.
    * 
    * @param startDate The starting date.
@@ -142,7 +157,7 @@ public class Scheduler {
         if (task instanceof RecurringTask) {// If the task is a recurring task, we will individually add each instance
                                             // within the time period.
           tasksInTimePeriod.addAll(((RecurringTask) task).getEffectiveTasks(startDate, endDate));
-        } else {
+        } else if(!task.getType().contentEquals("Cancellation")) {
           tasksInTimePeriod.add(task);
         }
       }
@@ -215,6 +230,9 @@ public class Scheduler {
       Object obj = new JSONParser().parse(reader);
       JSONArray taskList = (JSONArray) obj;
 
+      List<Task> tasksAdded = new ArrayList<>();
+      Boolean isOverlapping = false;
+
       for (Object task : taskList) {
         JSONObject taskObject = (JSONObject) task;
 
@@ -223,16 +241,43 @@ public class Scheduler {
         double startTime = ((Number) taskObject.get("StartTime")).doubleValue();
         double duration = ((Number) taskObject.get("Duration")).doubleValue();
 
-        Task newTask;
+        Task taskToAdd;
+
         if (taskObject.containsKey("EndDate")) {
-          newTask = new RecurringTask(name, type, ((Number) taskObject.get("StartDate")).intValue(), startTime,
-              duration, ((Number) taskObject.get("EndDate")).intValue(),
-              ((Number) taskObject.get("Frequency")).intValue());
+          int startDate = ((Number) taskObject.get("StartDate")).intValue();
+          int endDate = ((Number) taskObject.get("EndDate")).intValue();
+          int frequency = ((Number) taskObject.get("Frequency")).intValue();
+
+          taskToAdd = new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency);
+
+          if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) != null) {
+            isOverlapping = true;
+            break;
+          }         
+
+          addTask(taskToAdd);
+          tasksAdded.add(taskToAdd);
         } else {
-          newTask = new Task(name, type, ((Number) taskObject.get("Date")).intValue(), startTime, duration);
+          int date = ((Number) taskObject.get("Date")).intValue();
+
+          taskToAdd = new Task(name, type, date, startTime, duration);
+
+          if (!listOfTasks.isEmpty() && isOverlapping(date, startTime, duration) != null) {
+            isOverlapping = true;
+            break;
+          }    
+
+          addTask(taskToAdd);
+          tasksAdded.add(taskToAdd);
+        }
+      }
+
+      if (isOverlapping) {
+        for (Task task : tasksAdded) {
+          deleteTask(task);
         }
 
-        addTask(newTask);
+        System.out.println("Did not import data due to date conflicts!");
       }
     } catch (Exception e) {
       e.printStackTrace();
