@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class UserInterface {
@@ -88,29 +89,30 @@ public class UserInterface {
    * @throws IOException
    */
   public int promptForDate() throws IOException {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     String taskDateStr;
     String[] dateParts = null;
     int taskDate;
 
+    sdf.setLenient(false);
     while (true) {
       System.out.print("Enter the task start date (in format, MM/DD/YYYY): ");
       taskDateStr = sc.nextLine();
 
       // Check if input is valid
-
-      if (taskDateStr.contains("/")) {
-        dateParts = taskDateStr.split("/");
-
-        if (dateParts.length == 3 && isNumeric(dateParts)) {
-        	if(dateParts[0].length() == 2 && dateParts[1].length() == 2 && dateParts[2].length() == 4) {
-        		 break;
-        	}
-         
+      if(taskDateStr.matches("(\\d{2})\\/(\\d{2})\\/(\\d{2,4})$")) {
+        try {
+          Date date = sdf.parse(taskDateStr);
+          break;
+        } catch (ParseException e) {
+          System.out.println("Input is invalid!");
         }
+      } 
+      else {
+        System.out.println("Input is invalid!");
       }
-
-      System.out.println("Input is invalid!");
     }
+    dateParts = taskDateStr.split("/");
     taskDateStr = dateParts[2] + dateParts[0] + dateParts[1];
     taskDate = Integer.valueOf(taskDateStr);
 
@@ -220,6 +222,7 @@ public class UserInterface {
     		  break;
     	  }
       }
+      System.out.println("Input is invalid!");
     }
     
     int hour = Integer.valueOf(timeParts[0]);
