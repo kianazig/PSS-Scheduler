@@ -246,7 +246,7 @@ public class Scheduler {
           int endDate = ((Number) taskObject.get("EndDate")).intValue();
           int frequency = ((Number) taskObject.get("Frequency")).intValue();
 
-          if (isOverlapping(startDate, startTime, duration, endDate, frequency) == null) {
+          if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) == null) {
             isOverlapping = true;
             break;
           }
@@ -255,7 +255,7 @@ public class Scheduler {
         } else {
           int date = ((Number) taskObject.get("Date")).intValue();
 
-          if (isOverlapping(date, startTime, duration) == null) {
+          if (!listOfTasks.isEmpty() && isOverlapping(date, startTime, duration) == null) {
             isOverlapping = true;
             break;
           }
