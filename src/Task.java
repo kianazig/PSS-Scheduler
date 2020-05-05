@@ -102,6 +102,14 @@ public class Task {
     public double getDuration() {
         return duration;
     }
+
+    public int getEndDate() {
+        return 0;
+    }
+
+    public int getFrequency() {
+        return 0;
+    }
     
 }
 

@@ -236,4 +236,74 @@ public class Scheduler {
       e.printStackTrace();
     }
   }
+
+  /**
+   * Checks if the type of the task is valid.
+   * @param isTransientTask True if task is transient, false otherwise.
+   * @param type The given type to check.
+   * @return True if valid, false otherwise.
+   */
+  public boolean isValidTaskType(boolean isTransientTask, String type) {
+	  if(isTransientTask) {
+		  if (type.equals("Visit") || type.equals("Shopping") || type.equals("Appointment")) {
+			  return true;
+		  }
+	  }
+	  else {
+		  if (type.equals("Class") || type.equals("Study") || type.equals("Sleep") || type.equals("Exercise")
+				  || type.equals("Work") || type.equals("Meal")) {
+			  return true;
+		  }
+	  }
+	  return false;
+  }
+
+  /**
+   * Checks if the recurring task with the given details conflicts with any existing task.
+   * @param date Start date
+   * @param startTime Start time
+   * @param duration Duration
+   * @param endDate End date
+   * @param frequency Frequency
+   * @return
+   */
+  public Task isOverlapping(int date, double startTime, double duration, int endDate, int frequency) {
+	  RecurringTask newTask = new RecurringTask("TEST", "TEST", date, startTime, duration, endDate, frequency);
+	  List<Task> effectiveTasks = newTask.getEffectiveTasks();
+	  
+	  for(Task newTaskInstance : effectiveTasks) {
+		  int inDate = newTaskInstance.getDate();
+		  double inStartTime = newTaskInstance.getStartTime();
+		  double inDuration = newTaskInstance.getDuration();
+		  for(Task task : listOfTasks) {
+			  if(task.isOverlapping(inDate, inStartTime, inDuration)) {
+				  return task;
+			  }
+		  }
+	  }
+	  
+	  return null;
+  }
+  
+  /**
+   * Checks if the given parameters match with an instance of any recurring task.
+   * @param date Start date
+   * @param startTime Start time
+   * @param duration Duration
+   * @return Task it overlaps
+   */
+  public Task matchesRecurringTask(int date, double startTime, double duration) {
+	  for(Task task : listOfTasks) {
+		  if (task instanceof RecurringTask) {
+			  List<Task> effectiveTasks = ((RecurringTask) task).getEffectiveTasks();
+			  for(Task effectiveTask : effectiveTasks) {
+				  if (effectiveTask.getDate() == date && effectiveTask.getStartTime() == startTime && effectiveTask.getDuration() == duration) {
+					  return task;
+				  }
+			  }
+		  }
+	  }
+	  
+	  return null;
+  }
 }

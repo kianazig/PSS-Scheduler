@@ -68,10 +68,12 @@ public class RecurringTask extends Task {
     	return effectiveTasks;
     }
 
+    @Override
     public int getEndDate() {
         return endDate;
     }
 
+    @Override
     public int getFrequency() {
         return frequency;
     }

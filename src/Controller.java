@@ -168,17 +168,17 @@ public class Controller {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
 	  // TODO: Need to know if user is creating a transient, recurring, or antitask.
 	  
-	int taskClass = ui.promptForTaskClass();
-	
-	if(taskClass == 1) {//Transient Task
-		createTransientTask();
-	}
-	else if(taskClass == 2) {//Recurring Task
-		createRecurringTask();
-	}
-	else if(taskClass == 3) {//AntiTask
-		createAntiTask();
-	}
+    int taskClass = ui.promptForTaskClass();
+    
+    if(taskClass == 1) {//Transient Task
+      createTransientTask();
+    }
+    else if(taskClass == 2) {//Recurring Task
+      createRecurringTask();
+    }
+    else if(taskClass == 3) {//AntiTask
+      createAntiTask();
+    }
   }
   
   /**

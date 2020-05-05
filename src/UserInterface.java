@@ -25,9 +25,16 @@ public class UserInterface {
   public void printTask(Task task) {
     String taskName = task.getName();
     int taskStartDate = task.getDate();
-    String reformattedDate = null;
     double taskStartTime = task.getStartTime();
+    double taskDuration = task.getDuration();
+    String taskType = task.getType();
+    int taskEndDate = task.getEndDate();
+    int taskFrequency = task.getFrequency();
+    String reformattedDate = null;
     String reformattedTime = null;
+    String reformattedDuration = null;
+    String reformattedEndDate = null;
+    String freqUserFriendly = null;
 
     // Format date
     try {
@@ -35,6 +42,20 @@ public class UserInterface {
       SimpleDateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
       SimpleDateFormat dataDateFormat = new SimpleDateFormat("yyyyMMdd");
       reformattedDate = userDateFormat.format(dataDateFormat.parse(taskStartDateStr));
+
+      if(task instanceof RecurringTask) {
+        String taskEndDateStr = String.valueOf(taskEndDate);
+        reformattedEndDate = userDateFormat.format(dataDateFormat.parse(taskEndDateStr));
+        if(taskFrequency == 1) {
+          freqUserFriendly = "daily";
+        }
+        else if(taskFrequency == 7) {
+          freqUserFriendly = "weekly";
+        }
+        else if(taskFrequency == 30) {
+          freqUserFriendly = "monthly";
+        }
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -52,8 +73,33 @@ public class UserInterface {
       reformattedTime = String.valueOf(intPart) + ":45";
     }
 
-    // Print task in format: MM/dd/yyyy, HH:mm - TaskName
-    System.out.println(reformattedDate + ", " + reformattedTime + " - " + taskName);
+    int intPartDuration = (int) taskDuration;
+    double decimalPartDuration = taskDuration - intPartDuration;
+    if (decimalPartDuration == 0) {
+      reformattedDuration = String.valueOf(intPartDuration) + ":00";
+    } else if (decimalPartDuration == 0.25) {
+      reformattedDuration = String.valueOf(intPartDuration) + ":15";
+    } else if (decimalPartDuration == 0.50) {
+      reformattedDuration = String.valueOf(intPartDuration) + ":30";
+    } else if (decimalPartDuration == 0.75) {
+      reformattedDuration = String.valueOf(intPartDuration) + ":45";
+    }
+
+    // Recurring: Print task in format: MM/dd/yyyy, HH:mm - EndDate - [TaskName], TaskType
+    if(task instanceof RecurringTask) {
+      System.out.println("[ " + taskName + " ]");
+      System.out.println("  " + reformattedDate + ", " + reformattedTime + " - " + reformattedEndDate);
+      System.out.println("  Type: " + taskType);
+      System.out.println("  Duration: " + reformattedDuration);
+      System.out.println("  Frequency: " + freqUserFriendly);
+    }
+    // Normal: Print task in format: MM/dd/yyyy, HH:mm - [TaskName], TaskType
+    else {
+      System.out.println("[ " + taskName + " ]");
+      System.out.println("  " + reformattedDate + ", " + reformattedTime);
+      System.out.println("  Type: " + taskType);
+      System.out.println("  Duration: " + reformattedDuration);
+    }
   }
 
   /**
@@ -97,6 +143,43 @@ public class UserInterface {
     sdf.setLenient(false);
     while (true) {
       System.out.print("Enter the task start date (in format, MM/DD/YYYY): ");
+      taskDateStr = sc.nextLine();
+
+      // Check if input is valid
+      if(taskDateStr.matches("(\\d{2})\\/(\\d{2})\\/(\\d{2,4})$")) {
+        try {
+          Date date = sdf.parse(taskDateStr);
+          break;
+        } catch (ParseException e) {
+          System.out.println("Input is invalid!");
+        }
+      } 
+      else {
+        System.out.println("Input is invalid!");
+      }
+    }
+    dateParts = taskDateStr.split("/");
+    taskDateStr = dateParts[2] + dateParts[0] + dateParts[1];
+    taskDate = Integer.valueOf(taskDateStr);
+
+    return taskDate;
+  }
+  
+  /**
+   * Asks user to enter the date that a task should end.
+   * 
+   * @return - the task end date
+   * @throws IOException
+   */
+  public int promptForEndDate() throws IOException {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    String taskDateStr;
+    String[] dateParts = null;
+    int taskDate;
+
+    sdf.setLenient(false);
+    while (true) {
+      System.out.print("Enter the task end date (in format, MM/DD/YYYY): ");
       taskDateStr = sc.nextLine();
 
       // Check if input is valid
@@ -342,7 +425,7 @@ public class UserInterface {
         }
         incorrectInput = false;
       } catch (Exception E) {
-        System.out.println("Invalid input, try again: ");
+        System.out.print("Invalid input, try again: ");
         sc.nextLine();
       }
     } while (incorrectInput);
@@ -368,5 +451,54 @@ public class UserInterface {
    */
   public void printTaskSuccessfullyDeleted() {
 	  System.out.println("Task successfully deleted.");
+  }
+  
+  /**
+   * Alerts the user that a task with the given name already exists.
+   */
+  public void printTaskNameExists() {
+	  System.out.println("Provided name is not unique, please provide a unique task name");
+  }
+  
+  /**
+   * Asks the user if they want to create a transient, recurring, or antitask. 
+   * @return String representing type of task. 
+   */
+  public int promptForTaskClass() {
+	  int chosenMenuOption = 0;
+	  System.out.println("\nWhat type of task would you like to create: \n" + "1: Transient Task\n" + "2: Recurring Task\n" + "3: AntiTask\n");
+	  System.out.print("Please enter a number: ");
+	  boolean incorrectInput = true;
+	  do {
+		  try {
+			  chosenMenuOption = sc.nextInt();
+			  sc.nextLine();
+			  while (chosenMenuOption < 1 || chosenMenuOption > 3) {
+				  System.out.print("Invalid input, try again: ");
+				  chosenMenuOption = sc.nextInt();
+				  sc.nextLine();
+	     }
+			  incorrectInput = false;
+		 } catch (Exception E) {
+			 System.out.println("Invalid input, try again: ");
+			 sc.nextLine();
+		 }
+	  } while (incorrectInput);
+	  
+	  return chosenMenuOption;
+  }
+
+  /**
+   * Alerts the user that the task 'type' is invalid.
+   * @param isTransientTask True if task is transient, false otherwise.
+   */
+  public void printInvalidTaskType(boolean isTransientTask) {
+	  if(isTransientTask) {
+		  System.out.println("Invalid Task Type! Please enter Visit, Shopping, or Appointment.");
+	  }
+	  else {
+		  System.out.println("Invalid Task Type! Please enter Class, Study, Sleep, Exercise, Work, or Meal.");
+	  }
+	
   }
 }
