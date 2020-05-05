@@ -230,7 +230,7 @@ public class Scheduler {
       Object obj = new JSONParser().parse(reader);
       JSONArray taskList = (JSONArray) obj;
 
-      List<Task> tasksToAdd = new ArrayList<>();
+      List<Task> tasksAdded = new ArrayList<>();
       Boolean isOverlapping = false;
 
       for (Object task : taskList) {
@@ -246,30 +246,36 @@ public class Scheduler {
           int endDate = ((Number) taskObject.get("EndDate")).intValue();
           int frequency = ((Number) taskObject.get("Frequency")).intValue();
 
+          Task taskToAdd = new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency);
+
           if (!listOfTasks.isEmpty() && isOverlapping(startDate, startTime, duration, endDate, frequency) == null) {
             isOverlapping = true;
             break;
-          }
+          }         
 
-          tasksToAdd.add(new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency));
+          addTask(taskToAdd);
+          tasksAdded.add(taskToAdd);
         } else {
           int date = ((Number) taskObject.get("Date")).intValue();
 
-          if (!listOfTasks.isEmpty() && isOverlapping(date, startTime, duration) == null) {
+          Task taskToAdd = new Task(name, type, date, startTime, duration);
+
+          if (!listOfTasks.isEmpty() && isOverlapping(date, startTime, duration) != null) {
             isOverlapping = true;
             break;
-          }
+          }    
 
-          tasksToAdd.add(new Task(name, type, date, startTime, duration));
+          addTask(taskToAdd);
+          tasksAdded.add(taskToAdd);
         }
       }
 
       if (isOverlapping) {
-        System.out.println("Did not import data due to date conflicts!");
-      } else {
-        for (Task task : tasksToAdd) {
-          addTask(task);
+        for (Task task : tasksAdded) {
+          deleteTask(task);
         }
+
+        System.out.println("Did not import data due to date conflicts!");
       }
     } catch (Exception e) {
       e.printStackTrace();
