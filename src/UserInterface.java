@@ -118,6 +118,43 @@ public class UserInterface {
 
     return taskDate;
   }
+  
+  /**
+   * Asks user to enter the date that a task should end.
+   * 
+   * @return - the task end date
+   * @throws IOException
+   */
+  public int promptForEndDate() throws IOException {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    String taskDateStr;
+    String[] dateParts = null;
+    int taskDate;
+
+    sdf.setLenient(false);
+    while (true) {
+      System.out.print("Enter the task end date (in format, MM/DD/YYYY): ");
+      taskDateStr = sc.nextLine();
+
+      // Check if input is valid
+      if(taskDateStr.matches("(\\d{2})\\/(\\d{2})\\/(\\d{2,4})$")) {
+        try {
+          Date date = sdf.parse(taskDateStr);
+          break;
+        } catch (ParseException e) {
+          System.out.println("Input is invalid!");
+        }
+      } 
+      else {
+        System.out.println("Input is invalid!");
+      }
+    }
+    dateParts = taskDateStr.split("/");
+    taskDateStr = dateParts[2] + dateParts[0] + dateParts[1];
+    taskDate = Integer.valueOf(taskDateStr);
+
+    return taskDate;
+  }
 
   /**
    * Checks if there are letters in the array, if yes return false else true
@@ -368,5 +405,54 @@ public class UserInterface {
    */
   public void printTaskSuccessfullyDeleted() {
 	  System.out.println("Task successfully deleted.");
+  }
+  
+  /**
+   * Alerts the user that a task with the given name already exists.
+   */
+  public void printTaskNameExists() {
+	  System.out.println("Provided name is not unique, please provide a unique task name");
+  }
+  
+  /**
+   * Asks the user if they want to create a transient, recurring, or antitask. 
+   * @return String representing type of task. 
+   */
+  public int promptForTaskClass() {
+	  int chosenMenuOption = 0;
+	  System.out.println("\nWhat type of task would you like to create: \n" + "1: Transient Task\n" + "2: Recurring Task\n" + "3: AntiTask\n");
+	  System.out.print("Please enter a number: ");
+	  boolean incorrectInput = true;
+	  do {
+		  try {
+			  chosenMenuOption = sc.nextInt();
+			  sc.nextLine();
+			  while (chosenMenuOption < 1 || chosenMenuOption > 3) {
+				  System.out.print("Invalid input, try again: ");
+				  chosenMenuOption = sc.nextInt();
+				  sc.nextLine();
+	     }
+			  incorrectInput = false;
+		 } catch (Exception E) {
+			 System.out.println("Invalid input, try again: ");
+			 sc.nextLine();
+		 }
+	  } while (incorrectInput);
+	  
+	  return chosenMenuOption;
+  }
+
+  /**
+   * Alerts the user that the task 'type' is invalid.
+   * @param isTransientTask True if task is transient, false otherwise.
+   */
+  public void printInvalidTaskType(boolean isTransientTask) {
+	  if(isTransientTask) {
+		  System.out.println("Invalid Task Type! Please enter Visit, Shopping, or Appointment.");
+	  }
+	  else {
+		  System.out.println("Invalid Task Type! Please enter Class, Study, Sleep, Exercise, Work, or Meal.");
+	  }
+	
   }
 }
