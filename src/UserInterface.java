@@ -300,7 +300,7 @@ public class UserInterface {
       // Check if input is valid
       timeParts = taskDurationStr.split(":");
       if(timeParts.length == 2 && isNumeric(timeParts)) {
-    	  if(timeParts[1].length() == 2) {
+    	  if(timeParts[1].length() == 2 && Integer.parseInt(timeParts[0]) < 24) {
     		  break;
     	  }
       }

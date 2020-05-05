@@ -178,7 +178,7 @@ public class Controller {
             	scheduler.addTask(taskToEdit);
                 scheduler.getTask(taskName).setDuration(duration);
               } else {
-            	  scheduler.addTask(taskToEdit);
+            	scheduler.addTask(taskToEdit);
                 System.out.println("Unable to change due to conflicts with existing tasks!");
               }
               break;
@@ -392,6 +392,10 @@ public class Controller {
 	    double startTime = ui.promptForTime();
 	    double duration = ui.promptForDuration();
 	    int endDate = ui.promptForEndDate();
+	    while(endDate < date) {
+	    	System.out.println("End date must be after start date");
+	    	endDate = ui.promptForEndDate();
+	    }
 	    int frequency = ui.promptForFrequency();
 	    // test if the provided times cause any overlap with tasks already in the scheduler
 	    Task overlapTask = scheduler.isOverlapping(date, startTime, duration, endDate, frequency);
