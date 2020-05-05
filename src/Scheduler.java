@@ -168,17 +168,19 @@ public class Scheduler {
   public void writeToFile(String fileName, List<Task> tasks) {
     JSONArray list = new JSONArray();
 
-    for (Task task : tasks) {
+    for (Task task : listOfTasks) {
       JSONObject obj = new JSONObject();
       obj.put("Name", task.getName());
       obj.put("Type", task.getType());
-      obj.put("StartDate", task.getDate());
       obj.put("StartTime", task.getStartTime());
       obj.put("Duration", task.getDuration());
 
       if (task instanceof RecurringTask) {
+        obj.put("StartDate", task.getDate());
         obj.put("EndDate", ((RecurringTask) task).getEndDate());
         obj.put("Frequency", ((RecurringTask) task).getFrequency());
+      } else {
+        obj.put("Date", task.getDate());
       }
 
       list.add(obj);
