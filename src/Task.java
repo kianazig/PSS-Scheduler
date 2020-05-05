@@ -110,6 +110,30 @@ public class Task {
     public int getFrequency() {
         return 0;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDate(int date) {
+        this.date = date;
+    }
+
+    public void setStartTime(double time) {
+        this.startTime = time;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+
+    public void setEndDate(int date) {}
+
+    public void setFrequency(int frequency) {}
     
 }
 

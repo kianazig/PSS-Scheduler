@@ -111,17 +111,158 @@ public class Controller {
 
       scheduler.writeToFile(fileName, scheduler.getTasksInTimePeriod(startDate, endDate));
     } else {
-      // TODO: What to do if user doesn't want to overrwite file?
-      // Back to main menu or allow for new file name input?
+      System.out.println("Writing schedule canceled. Returning to main menu.");
+      displayMenu();
     }
-
   }
 
   /**
    * Prompts user for task and allows them to edit it.
    */
-  private void editATask() {
+  private void editATask() throws IOException {
     // TODO Auto-generated method stub
+    boolean continueFlag = true;
+    String taskName = ui.promptForTaskName();
+    int chosenOption = 0;
+    if(scheduler.getTask(taskName) != null) {
+      ui.printTask(scheduler.getTask(taskName));
+      
+      // Loop what they would like to change
+      do {
+        if(scheduler.getTask(taskName) instanceof RecurringTask) {
+          chosenOption = ui.promptForChanges(1);
+          switch (chosenOption) {
+            case 1: // name
+              String name = ui.promptForTaskName();
+              if(scheduler.isNameUnique(name)) {
+                scheduler.getTask(taskName).setName(name);
+                taskName = name;
+              }
+              else {
+                ui.printTaskNameExists();
+              }
+              break;
+            case 2: // type
+              String type = ui.promptForTaskType();
+              if(scheduler.isValidTaskType(false, type)) {
+                scheduler.getTask(taskName).setType(type);
+              }
+              else {
+                ui.printInvalidTaskType(false);
+              }
+              break;
+            case 3: // start date
+              int startDate = ui.promptForDate();
+              if((scheduler.isOverlapping(startDate, scheduler.getTask(taskName).getStartTime(), scheduler.getTask(taskName).getDuration(), 
+                scheduler.getTask(taskName).getEndDate(), scheduler.getTask(taskName).getFrequency()) == null)) {
+                scheduler.getTask(taskName).setDate(startDate);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 4: // start time
+              double startTime = ui.promptForTime();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), startTime, scheduler.getTask(taskName).getDuration(), 
+                scheduler.getTask(taskName).getEndDate(), scheduler.getTask(taskName).getFrequency()) == null)) {
+                scheduler.getTask(taskName).setStartTime(startTime);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 5: // duration
+              double duration = ui.promptForDuration();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), duration, 
+                scheduler.getTask(taskName).getEndDate(), scheduler.getTask(taskName).getFrequency()) == null)) {
+                scheduler.getTask(taskName).setDuration(duration);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 6: // end date
+              int endDate = ui.promptForEndDate();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), scheduler.getTask(taskName).getDuration(), 
+                endDate, scheduler.getTask(taskName).getFrequency()) == null)) {
+                scheduler.getTask(taskName).setEndDate(endDate);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 7: // frequency
+              int frequency = ui.promptForFrequency();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), scheduler.getTask(taskName).getDuration(), 
+                scheduler.getTask(taskName).getEndDate(), frequency) == null)) {
+                scheduler.getTask(taskName).setFrequency(frequency);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 8: // main menu
+              continueFlag = false;
+              displayMenu();
+              break;
+            default:
+              break;
+          }
+        }
+        else {
+          chosenOption = ui.promptForChanges(0);
+          switch (chosenOption) {
+            case 1: // name
+              String name = ui.promptForTaskName();
+              if(scheduler.isNameUnique(name)) {
+                scheduler.getTask(taskName).setName(name);
+                taskName = name;
+              }
+              else {
+                ui.printTaskNameExists();
+              }
+              break;
+            case 2: // type
+              String type = ui.promptForTaskType();
+              if(scheduler.isValidTaskType(true, type)) {
+                scheduler.getTask(taskName).setType(type);
+              }
+              else {
+                ui.printInvalidTaskType(true);
+              }
+              break;
+            case 3: // start date
+              int startDate = ui.promptForDate();
+              if((scheduler.isOverlapping(startDate, scheduler.getTask(taskName).getStartTime(), scheduler.getTask(taskName).getDuration()) == null)) {
+                scheduler.getTask(taskName).setDate(startDate);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 4: // start time
+              double startTime = ui.promptForTime();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), startTime, scheduler.getTask(taskName).getDuration()) == null)) {
+                scheduler.getTask(taskName).setStartTime(startTime);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 5: // duration
+              double duration = ui.promptForDuration();
+              if((scheduler.isOverlapping(scheduler.getTask(taskName).getDate(), scheduler.getTask(taskName).getStartTime(), duration) == null)) {
+                scheduler.getTask(taskName).setDuration(duration);
+              } else {
+                System.out.println("Unable to change due to conflicts with existing tasks!");
+              }
+              break;
+            case 6: // main menu
+              continueFlag = false;
+              displayMenu();
+              break;
+            default:
+              break;
+          }
+        }
+      } while(continueFlag);
+    }
+    else {
+    	ui.printTaskNameError();
+    }
 
   }
 
@@ -157,8 +298,7 @@ public class Controller {
     }
     else {
     	ui.printTaskNameError();
-    }
-    
+    }  
   }
 
   /**
@@ -166,7 +306,6 @@ public class Controller {
    */
   private void createATask() throws IOException {
     // TODO: addTask needs to be expanded, or this info sent elsewhere. Then Test.
-	  // TODO: Need to know if user is creating a transient, recurring, or antitask.
 	  
     int taskClass = ui.promptForTaskClass();
     
@@ -209,7 +348,7 @@ public class Controller {
 	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
 	    	System.out.println("Provided times conflict with the following task: ");
 	    	ui.printTask(overlapTask);
-	    	System.out.println("Please provide different time parameters");
+	    	System.out.println("Please provide different time parameters.");
 	    	date = ui.promptForDate();
 	    	startTime = ui.promptForTime();
 	    	duration = ui.promptForDuration();
@@ -249,7 +388,7 @@ public class Controller {
 	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
 	    	System.out.println("Provided times conflict with the following task: ");
 	    	ui.printTask(overlapTask);
-	    	System.out.println("Please provide different time parameters");
+	    	System.out.println("Please provide different time parameters.");
 	    	date = ui.promptForDate();
 	    	startTime = ui.promptForTime();
 	    	duration = ui.promptForDuration();
@@ -289,7 +428,7 @@ public class Controller {
 	    	// otherwise, print the conflicting task and ask the user to try again
 	    	// perhaps a printOverlapMessage method can be put in the UserInterface class
 	    	System.out.println("This antitask does not match any instances of any recurring tasks.");
-	    	System.out.println("Please provide different time parameters");
+	    	System.out.println("Please provide different time parameters.");
 	    	date = ui.promptForDate();
 	    	startTime = ui.promptForTime();
 	    	duration = ui.promptForDuration();

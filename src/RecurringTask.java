@@ -77,6 +77,16 @@ public class RecurringTask extends Task {
     public int getFrequency() {
         return frequency;
     }
+
+    @Override
+    public void setEndDate(int date) {
+        this.endDate = date;
+    }
+
+    @Override
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
     
     @Override
     public boolean withinTimePeriod(int startDate, int endDate) {

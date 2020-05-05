@@ -148,7 +148,7 @@ public class UserInterface {
       // Check if input is valid
       if(taskDateStr.matches("(\\d{2})\\/(\\d{2})\\/(\\d{2,4})$")) {
         try {
-          Date date = sdf.parse(taskDateStr);
+          sdf.parse(taskDateStr);
           break;
         } catch (ParseException e) {
           System.out.println("Input is invalid!");
@@ -185,7 +185,7 @@ public class UserInterface {
       // Check if input is valid
       if(taskDateStr.matches("(\\d{2})\\/(\\d{2})\\/(\\d{2,4})$")) {
         try {
-          Date date = sdf.parse(taskDateStr);
+          sdf.parse(taskDateStr);
           break;
         } catch (ParseException e) {
           System.out.println("Input is invalid!");
@@ -293,7 +293,6 @@ public class UserInterface {
     String[] timeParts = null;
     double taskDuration;
 
-    //TODO: Is there a maximum or minimum duration?
     while (true) {
       System.out.print("Enter the task duration (in format, HH:MM): ");
       taskDurationStr = sc.nextLine();
@@ -460,7 +459,7 @@ public class UserInterface {
    * Alerts the user that a task with the given name already exists.
    */
   public void printTaskNameExists() {
-	  System.out.println("Provided name is not unique, please provide a unique task name");
+	  System.out.println("Provided name is not unique, please provide a unique task name.");
   }
   
   /**
@@ -483,7 +482,7 @@ public class UserInterface {
 	     }
 			  incorrectInput = false;
 		 } catch (Exception E) {
-			 System.out.println("Invalid input, try again: ");
+			 System.out.print("Invalid input, try again: ");
 			 sc.nextLine();
 		 }
 	  } while (incorrectInput);
@@ -502,6 +501,49 @@ public class UserInterface {
 	  else {
 		  System.out.println("Invalid Task Type! Please enter Class, Study, Sleep, Exercise, Work, or Meal.");
 	  }
-	
+  }
+
+  public int promptForChanges(int type) {
+    int chosenOption = 0;
+
+    if(type == 1) { // Recurring
+      System.out.println("\nWhat would you like to change: \n" + "1: Name\n" + "2: Type\n" + "3: Start Date\n" + "4: Start Time\n" + "5: Duration\n"
+                          + "6: End Date\n" + "7: Frequency\n" + "8: Return to main menu\n");
+      System.out.print("Please enter a number: ");
+
+    }
+    else if(type == 0) { // Transient/Anti
+      System.out.println("\nWhat would you like to change: \n" + "1: Name\n" + "2: Type\n" + "3: Start Date\n" + "4: Start Time\n" + "5: Duration\n" 
+                          + "6: Return to main menu\n");
+      System.out.print("Please enter a number: ");
+    }
+
+    boolean incorrectInput = true;
+	  do {
+		  try {
+			  chosenOption = sc.nextInt();
+        sc.nextLine();
+        if(type == 1) {
+          while (chosenOption < 1 || chosenOption > 8) {
+            System.out.print("Invalid input, try again: ");
+            chosenOption = sc.nextInt();
+            sc.nextLine();
+          }
+        }
+        else if(type == 0) {
+          while (chosenOption < 1 || chosenOption > 6) {
+            System.out.print("Invalid input, try again: ");
+            chosenOption = sc.nextInt();
+            sc.nextLine();
+          }
+        }
+			  incorrectInput = false;
+		 } catch (Exception E) {
+			 System.out.print("Invalid input, try again: ");
+			 sc.nextLine();
+		 }
+	  } while (incorrectInput);
+
+    return chosenOption;
   }
 }
