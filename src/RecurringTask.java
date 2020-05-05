@@ -1,5 +1,9 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class RecurringTask extends Task {
@@ -25,30 +29,22 @@ public class RecurringTask extends Task {
     public List<Task> getEffectiveTasks() {
         List<Task> effectiveTasks = new ArrayList<Task>();
 
-        SimpleDateFormat dataFormat = new SimpleDateFormat("yyyyMMdd");
-        Date formattedStartDate = null, formattedEndDate = null;
-        Calendar calendar = null;
-        try {
-			formattedStartDate = dataFormat.parse(String.valueOf(date));
-			formattedEndDate = dataFormat.parse(String.valueOf(endDate));
-			calendar = new GregorianCalendar();
-		} catch (ParseException e) {
-			System.out.println("Date not parsed properly.");
-			e.printStackTrace();
-		}
+        DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate currentDate = LocalDate.parse(Integer.toString(date), DateTimeFormatter.ofPattern("yyyyMMdd"));        
+       	LocalDate localEndDate = LocalDate.parse(Integer.toString(endDate), DateTimeFormatter.ofPattern("yyyyMMdd"));
+    	localEndDate = localEndDate.plusDays(1);
 
-        calendar.setTime(formattedStartDate);
-        while(calendar.getTime().compareTo(formattedEndDate) <= 0) {
-        	int effectiveDate = Integer.parseInt(dataFormat.format(calendar.getTime()));
+        while(currentDate.isBefore(localEndDate)) {
+        	int effectiveDate = Integer.parseInt(dataFormat.format(currentDate));
         	effectiveTasks.add(new Task(name, type, effectiveDate, startTime, duration));
         	if(frequency == 1) {
-        		calendar.roll(Calendar.DATE, true);
+        		currentDate = currentDate.plusDays(1);
         	}
         	else if(frequency == 7) {
-        		calendar.roll(Calendar.WEEK_OF_YEAR, true);
+        		currentDate = currentDate.plusWeeks(1);
         	}
         	else {
-        		calendar.roll(Calendar.MONTH, true);
+        		currentDate = currentDate.plusMonths(1);
         	}
         }
         
