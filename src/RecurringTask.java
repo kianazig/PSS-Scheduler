@@ -5,6 +5,7 @@ import java.util.*;
 public class RecurringTask extends Task {
     private int endDate;
     private int frequency;
+    private Scheduler scheduler;
 
     public RecurringTask(String name, String type, int date, double startTime, double duration, int endDate, int frequency) {
         super(name, type, date, startTime, duration);
@@ -12,6 +13,10 @@ public class RecurringTask extends Task {
         this.frequency = frequency;
     }
 
+    public void setScheduler(Scheduler inScheduler) {
+    	this.scheduler = inScheduler;
+    }
+    
     /**
      * Returns each occurrence of the recurring task. 
      * 
@@ -44,6 +49,21 @@ public class RecurringTask extends Task {
         	}
         	else {
         		calendar.roll(Calendar.MONTH, true);
+        	}
+        }
+        
+        if(scheduler == null || scheduler.getAntiTasks() == null)
+        	return effectiveTasks;
+        
+        // removing effective task instances which are cancelled by anti-tasks
+        for(Task antiTask : scheduler.getAntiTasks()) {
+        	if(antiTask.startTime == this.startTime && antiTask.duration == this.duration) {
+        		for(int i = 0; i < effectiveTasks.size(); i++) {
+        			if(effectiveTasks.get(i).getDate() == antiTask.getDate()) {
+        				effectiveTasks.remove(i);
+        				i--;
+        			}
+        		}
         	}
         }
         
