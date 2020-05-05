@@ -215,6 +215,9 @@ public class Scheduler {
       Object obj = new JSONParser().parse(reader);
       JSONArray taskList = (JSONArray) obj;
 
+      List<Task> tasksToAdd = new ArrayList<>();
+      Boolean isOverlapping = false;
+
       for (Object task : taskList) {
         JSONObject taskObject = (JSONObject) task;
 
@@ -223,16 +226,35 @@ public class Scheduler {
         double startTime = ((Number) taskObject.get("StartTime")).doubleValue();
         double duration = ((Number) taskObject.get("Duration")).doubleValue();
 
-        Task newTask;
         if (taskObject.containsKey("EndDate")) {
-          newTask = new RecurringTask(name, type, ((Number) taskObject.get("StartDate")).intValue(), startTime,
-              duration, ((Number) taskObject.get("EndDate")).intValue(),
-              ((Number) taskObject.get("Frequency")).intValue());
-        } else {
-          newTask = new Task(name, type, ((Number) taskObject.get("Date")).intValue(), startTime, duration);
-        }
+          int startDate = ((Number) taskObject.get("StartDate")).intValue();
+          int endDate = ((Number) taskObject.get("EndDate")).intValue();
+          int frequency = ((Number) taskObject.get("Frequency")).intValue();
 
-        addTask(newTask);
+          if (isOverlapping(startDate, startTime, duration, endDate, frequency) == null) {
+            isOverlapping = true;
+            break;
+          }
+
+          tasksToAdd.add(new RecurringTask(name, type, startDate, startTime, duration, endDate, frequency));
+        } else {
+          int date = ((Number) taskObject.get("Date")).intValue();
+
+          if (isOverlapping(date, startTime, duration) == null) {
+            isOverlapping = true;
+            break;
+          }
+
+          tasksToAdd.add(new Task(name, type, date, startTime, duration));
+        }
+      }
+
+      if (isOverlapping) {
+        System.out.println("Did not import data due to date conflicts!");
+      } else {
+        for (Task task : tasksToAdd) {
+          addTask(task);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();
